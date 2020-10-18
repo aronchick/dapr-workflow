@@ -23,6 +23,7 @@ import os
 import asyncio
 import aiohttp
 
+
 async def make_request(url):
     print(f"making request to {url}")
     async with aiohttp.ClientSession() as session:
@@ -30,17 +31,19 @@ async def make_request(url):
             if resp.status == 200:
                 print(await resp.text())
 
-with WorkflowContext('step_3') as context:
-    with DaprClient(address=context['dapr_address']) as d:
+
+with WorkflowContext("step_3") as context:
+    with DaprClient(address=context["dapr_address"]) as d:
         storeName = "cosmosStateStore"
         key = "workingDirectory"
 
-        longRunningURL = os.environ.get('longRunningURL')
-        longRunningURLCode = os.environ.get('longRunningURLCode')
+        longRunningURL = os.environ.get("longRunningURL")
+        longRunningURLCode = os.environ.get("longRunningURLCode")
 
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(make_request(f"{longRunningURL}?code={longRunningURLCode}"))
+        loop.run_until_complete(
+            make_request(f"{longRunningURL}?code={longRunningURLCode}")
+        )
 
-        context['step_3_variable'] = f"Step_3_variable.value = {uuid4().hex}"
+        context["step_3_variable"] = f"Step_3_variable.value = {uuid4().hex}"
         print(context)
-

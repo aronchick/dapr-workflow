@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/daaronch/miniconda3/envs/dapr-workflow/bin/python"
+    "python.pythonPath": "/home/daaronch/miniconda3/envs/dapr-workflow/bin/python",
+    "python.formatting.provider": "black"
 }
