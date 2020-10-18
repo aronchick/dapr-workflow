@@ -1,0 +1,11 @@
+azure-common
+azure-core
+azure-servicebus
+cloudevents
+dapr
+dapr-ext-grpc
+msrest
+msrestazure
+dapr
+dapr-ext-grpc
+aiohttp

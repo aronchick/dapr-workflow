@@ -1,2 +1,4 @@
 .secrets
 components/*
+.env
+__pycache__

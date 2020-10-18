@@ -1,0 +1,78 @@
+name: main
+
+on:
+  push:
+    branches: [ main ]
+  # workflow_dispatch:
+  #   inputs:
+  #     tags:
+  #       description: 'Workflow Dispatched'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  workflow_run:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    
+    - name: hack python
+      run: |
+        # Hack to get setup-python to work on act
+        if [ ! -f "/etc/lsb-release" ] ; then
+          echo "DISTRIB_RELEASE=18.04" > /etc/lsb-release
+        fi
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7.9'
+
+    - name: Install dependencies
+      run: python3 -m pip install --upgrade pip setuptools wheel
+
+    - name: Setup Environment
+      id: setup_environment
+      run: |
+        python3 -m pip install -r requirements.txt
+        ./setup_dapr.sh
+
+    - name: Start SSH via Ngrok
+      if: ${{ failure() }}
+      run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+      env:
+        # After sign up on the https://ngrok.com/
+        # You can find this token here: https://dashboard.ngrok.com/get-started/setup
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+
+        # This password you will use when authorizing via SSH 
+        # USER_PASS: ${{ secrets.USER_PASS }}
+        USER_PASS: murAmur
+
+
+    - name: Create Components
+      id: create_components
+      run: 'echo "$COMPONENT_azurekeyvault" > /home/runner/.dapr/components/azurekeyvault.yml'
+      shell: bash
+      env:
+        COMPONENT_azurekeyvault: ${{ secrets.COMPONENT_azurekeyvault }}
+
+    - name: Cache Installation
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-installation
+      with:
+        path: ~/.local
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Step 1
+      id: step_1
+      run: dapr run --app-id python-subscriber -d components python3 step_1.py

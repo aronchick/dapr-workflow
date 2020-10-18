@@ -3,6 +3,9 @@ kind: Configuration
 metadata:
   name: daprConfig
   namespace: default
+annotations:
+  dapr.io/log-level: "debug"  
+  dapr.io/app-level: "debug"  
 spec:
   tracing:
     samplingRate: "1"
