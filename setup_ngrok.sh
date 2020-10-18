@@ -17,7 +17,7 @@ wget -q https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip
 unzip ngrok-stable-linux-386.zip
 chmod +x ./ngrok
 
-echo "### Update user: $USER password ###"
+echo "### Update user: $USER password ###" 
 echo -e "$USER_PASS\n$USER_PASS" | sudo passwd "$USER"
 
 echo "### Start ngrok proxy for 22 port ###"

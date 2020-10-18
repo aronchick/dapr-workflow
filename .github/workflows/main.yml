@@ -49,13 +49,14 @@ jobs:
         # After sign up on the https://ngrok.com/
         # You can find this token here: https://dashboard.ngrok.com/get-started/setup
         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+        USER_PASS: ${{ secrets.USER_PASS }}
 
     - name: Create Components
       id: create_components
-      run: 'echo "$COMPONENT_azurekeyvault" > /home/runner/.dapr/components/azurekeyvault.yml'
+      run: 'echo "$COMPONENT_AZUREKEYVAULT" > /home/runner/.dapr/components/azurekeyvault.yml'
       shell: bash
       env:
-        COMPONENT_azurekeyvault: ${{ secrets.COMPONENT_azurekeyvault }}
+        COMPONENT_azurekeyvault: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
 
     - name: Cache Installation
       uses: actions/cache@v2
