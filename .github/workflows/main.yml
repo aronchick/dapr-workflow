@@ -70,6 +70,11 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
+    - name: Debugging with tmate
+      # You may pin to the exact commit or the version.
+      # uses: mxschmitt/action-tmate@db65d6e9a5d44586bafd05807eef6e82d0a2e86c
+      uses: mxschmitt/action-tmate@v3
+
     - name: Step 1
       id: step_1
       run: dapr run --app-id python-subscriber -d .dapr/components python3 step_1.py
