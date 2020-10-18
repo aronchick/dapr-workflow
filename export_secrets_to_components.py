@@ -1,12 +1,13 @@
 import os
 
 all_components = [
-    "azurekeyvault",
-    "azuresb",
-    "cosmosstatestore",
-    "kafka-binding",
-    "localredisstate",
+    "AZUREKEYVAULT",
 ]
+
+    # "azuresb",
+    # "cosmosstatestore",
+    # "kafka-binding",
+    # "localredisstate",
 
 for component in all_components:
     component_value = os.environ.get(f"COMPONENT_{component}")
