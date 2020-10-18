@@ -55,6 +55,7 @@ jobs:
     - name: Create Components
       id: create_components
       run: |
+        mkdir /home/runner/.dapr
         mkdir /home/runner/.dapr/components
         'echo "$COMPONENT_AZUREKEYVAULT" > /home/runner/.dapr/components/azurekeyvault.yml'
         dapr init
