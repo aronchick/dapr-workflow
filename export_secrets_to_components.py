@@ -10,11 +10,7 @@ all_components = [
     # "kafka-binding",
     # "localredisstate",
 
-dapr_dir = Path('/home/runner/.dapr') 
-if not (dapr_dir.exists()):
-    dapr_dir.mkdir()
-
-component_dir = dapr_dir / 'components'
+component_dir = Path('components')
 if not (component_dir.exists()):
     component_dir.mkdir()
 

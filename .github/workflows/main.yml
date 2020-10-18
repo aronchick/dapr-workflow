@@ -72,4 +72,4 @@ jobs:
 
     - name: Step 1
       id: step_1
-      run: dapr run --app-id python-subscriber -d .dapr/components python3 step_1.py
+      run: dapr run --app-id python-subscriber -d ~/.dapr/components python3 step_1.py
