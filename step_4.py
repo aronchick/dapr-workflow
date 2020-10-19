@@ -12,8 +12,6 @@ app = App()
 def longRunningTaskFinished(event: v1.Event) -> None:
     # print(event.Data(),flush=True)
     print(f"Long running task finished at {datetime.datetime.now().isoformat()}")
-    os.popen("dapr stop --app-id python-subscriber")
-
 
 from context import WorkflowContext
 

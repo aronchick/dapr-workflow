@@ -92,4 +92,4 @@ jobs:
 
     - name: Step 1
       id: step_1
-      run: dapr run --app-id python-components python3 step_1.py
+      run: dapr run --app-id step_1 -d /home/daaronch/dapr-workflow/components -P grpc -G 20001 python3 step_1.py

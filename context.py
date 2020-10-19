@@ -3,6 +3,7 @@ from typing import Dict
 import json
 from json import dumps, loads
 import datetime
+import os
 
 from dapr.clients.grpc.client import DaprClient
 
@@ -47,6 +48,7 @@ class WorkflowContext(Dict):
         with DaprClient(address=self["dapr_address"]) as d:
             self.end_step()
             kv = d.save_state(storename, state_code, self.dehydrate())
+            os.popen(f"dapr stop --app-id {self['step_name']}")
 
     def end_step(self):
         self[self["step_name"]]["end"] = datetime.datetime.now().isoformat()
