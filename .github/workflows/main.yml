@@ -41,11 +41,11 @@ jobs:
         python3 -m pip install -r requirements.txt
         ./setup_dapr.sh
 
-    - name: Azure Login
-      uses: Azure/login@v1
-      with:
-        # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    # - name: Azure Login
+    #   uses: Azure/login@v1
+    #   with:
+    #     # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     # - name: Start SSH via Ngrok
     #   run: |
@@ -62,7 +62,7 @@ jobs:
       id: create_components
       run: |
         python3 export_secrets_to_components.py
-        'echo $WORKFLOW_CERT > components/workflow-cert.txt'
+        'echo "$WORKFLOW_CERT" > components/workflow-cert.txt'
         base64 --decode components/workflow-cert.txt > components/workflow-cert.pfx
       env:
         WORKFLOW_CERT: ${{ secrets.WORKFLOW_CERT }}
