@@ -71,7 +71,7 @@ jobs:
       run: |
         python3 export_secrets_to_components.py
       env:
-        WORKFLOW_CERT: ${{ secrets.WORKFLOW_CERT }}
+        WORKFLOWVAULTRBACCERT: ${{ secrets.WORKFLOWVAULTRBACCERT }}
         COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
 
     - name: Cache Installation
@@ -88,8 +88,11 @@ jobs:
 
     - name: Setting up dapr
       id: dapr_init
-      run: dapr init
+      run: |
+        dapr init
+        dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
+
 
     - name: Step 1
       id: step_1
-      run: dapr run --app-id step_1 -d /home/daaronch/dapr-workflow/components -P grpc -G 20001 python3 step_1.py
+      run: python3 step_1.py
