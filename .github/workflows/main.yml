@@ -62,9 +62,9 @@ jobs:
       id: create_components
       run: |
         python3 export_secrets_to_components.py
-        az keyvault secret download --vault-name workflow-vault --name workflow-cert --file workflow-cert.txt
-        base64 --decode workflow-cert.txt > components/workflow-cert.pfx
+        base64 --decode `echo $WORKFLOW_CERT` > components/workflow-cert.pfx
       env:
+        WORKFLOW_CERT: ${{ secrets.WORKFLOW_CERT }}
         COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
 
     - name: Cache Installation
