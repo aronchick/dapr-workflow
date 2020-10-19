@@ -91,6 +91,7 @@ jobs:
       run: |
         dapr init
         dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
+        
 
 
     - name: Step 1

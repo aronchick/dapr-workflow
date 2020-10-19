@@ -25,8 +25,8 @@ for component in all_components:
         print(f"Writing to {str(file_path.absolute)}")
         file_path.write_text(component_value)
 
-workflow_cert = os.environ.get('workflowVaultRBACCert')
-cert_txt_path = component_dir / "workflowVaultRBACCert.txt"
+workflow_cert = os.environ.get('WORKFLOWVAULTRBACCERT')
+cert_txt_path = component_dir / "WORKFLOWVAULTRBACCERT.txt"
 cert_txt_path.write_text(workflow_cert)
 exec_command = f"base64 -di {str(cert_txt_path)} > {str(component_dir)}/workflowVaultRBACCert.pfx"
 print(f"Exec command: {exec_command}")
