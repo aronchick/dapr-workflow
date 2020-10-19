@@ -34,11 +34,13 @@ async def make_request(url):
 
 with WorkflowContext("step_3") as context:
     with DaprClient(address=context["dapr_address"]) as d:
-        storeName = "cosmosStateStore"
+        storeName = "redisstatestore"
         key = "workingDirectory"
 
-        longRunningURL = os.environ.get("longRunningURL")
-        longRunningURLCode = os.environ.get("longRunningURLCode")
+
+
+        longRunningURL = os.environ.get("EXTERNAL_PIPELINE")
+        longRunningURLCode = os.environ.get("EXTERNAL_PIPELINE_SHARED_SECRET")
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(
