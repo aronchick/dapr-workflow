@@ -3,12 +3,13 @@ from pathlib import Path
 
 all_components = [
     "AZUREKEYVAULT",
+    "LOCALREDISSTATE"
+    "AZURESB"
 ]
 
 # "azuresb",
 # "cosmosstatestore",
 # "kafka-binding",
-# "localredisstate",
 
 component_dir = Path("components")
 print(f"Component dir: {str(component_dir.absolute)}")
