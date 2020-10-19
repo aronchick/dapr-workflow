@@ -111,6 +111,9 @@ jobs:
     - name: Step 3
       id: step_3
       run: python3 step_3.py
+      env:
+        EXTERNAL_PIPELINE: ${{ secrets.EXTERNAL_PIPELINE }}
+        EXTERNAL_PIPELINE_SHARED_SECRET: ${{ secrets.EXTERNAL_PIPELINE_SHARED_SECRET }}
 
     - name: Step 4
       id: step_4
