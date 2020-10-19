@@ -86,6 +86,10 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
+    - name: Setting up dapr
+      id: dapr_init
+      run: dapr init
+
     - name: Step 1
       id: step_1
-      run: dapr run --app-id python-subscriber -d components python3 step_1.py
+      run: dapr run --app-id python-components python3 step_1.py

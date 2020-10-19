@@ -31,7 +31,3 @@ cert_txt_path.write_text(workflow_cert)
 exec_command = f"base64 -di {str(cert_txt_path)} > {str(component_dir)}/workflow-cert.pfx"
 print(f"Exec command: {exec_command}")
 os.popen(exec_command)
-
-os.popen(f"ls -la components")
-
-os.popen("dapr init")
