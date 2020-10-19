@@ -90,6 +90,17 @@ jobs:
       id: dapr_init
       run: |
         dapr init
+
+    - name: Setting up dapr 2
+      id: dapr_init_2
+      run: |
+        echo "________________________________________________"
+        cwd
+        echo "________________________________________________"
+
+    - name: Setting up dapr 3
+      id: dapr_init_3
+      run: |
         dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
 
     - name: Debugging with tmate
