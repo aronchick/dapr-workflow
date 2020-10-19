@@ -18,7 +18,7 @@ if not (component_dir.exists()):
 for component in all_components:
     var_name = f"COMPONENT_{component}"
     component_value = os.environ.get(var_name)
-    # print(f"V - {var_name}: {component_value}")
+    print(f"V - {var_name}: {component_value}")
     if component_value is None:
         # print(os.environ
         file_path = component_dir / f"{var_name}.yaml"
@@ -32,5 +32,6 @@ exec_command = f"base64 -di {str(cert_txt_path)} > {str(component_dir)}/workflow
 print(f"Exec command: {exec_command}")
 os.popen(exec_command)
 
+os.popen(f"ls -la components")
 
 os.popen("dapr init")
