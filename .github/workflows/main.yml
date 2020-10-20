@@ -32,46 +32,18 @@ jobs:
       with:
         python-version: '3.7.9'
 
-    - name: Install dependencies
-      run: python3 -m pip install --upgrade pip setuptools wheel
-
     - name: Setup Environment
-      id: setup_environment
       run: |
+        python3 -m pip install --upgrade pip setuptools wheel
         python3 -m pip install -r requirements.txt
         ./setup_dapr.sh
 
-    # - name: Azure Login
-    #   uses: Azure/login@v1
-    #   with:
-    #     # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    # - name: Start SSH via Ngrok
-    #   run: |
-    #     ./setup_ngrok.sh
-    #     sleep 1h
-    #   env:
-    #     # After sign up on the https://ngrok.com/
-    #     # You can find this token here: https://dashboard.ngrok.com/get-started/setup
-    #     NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-    #     USER_PASS: ${{ secrets.USER_PASS }}
-    #     COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
-
-    # - name: Debugging with tmate
-    #   # You may pin to the exact commit or the version.
-    #   # uses: mxschmitt/action-tmate@db65d6e9a5d44586bafd05807eef6e82d0a2e86c
-    #   uses: mxschmitt/action-tmate@v3
-    #   env:
-    #     WORKFLOWVAULTRBACCERT: ${{ secrets.WORKFLOWVAULTRBACCERT }}
-    #     COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
-    #     COMPONENT_LOCALREDISSTATE: ${{ secrets.COMPONENT_LOCALREDISSTATE }}
-    #     COMPONENT_AZURESB: ${{ secrets.COMPONENT_AZURESB }}
-
-    - name: Create Components
+    - name: Setting up dapr
       id: create_components
       run: |
         python3 export_secrets_to_components.py
+        dapr init
+        dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
       env:
         WORKFLOWVAULTRBACCERT: ${{ secrets.WORKFLOWVAULTRBACCERT }}
         COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
@@ -90,35 +62,21 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Setting up dapr
-      id: dapr_init
-      run: |
-        dapr init
-        dapr run --app-id dapr_sidecar -d components -P grpc -G 20001 &
-
-    # - name: Debugging with tmate
-    #   # You may pin to the exact commit or the version.
-    #   # uses: mxschmitt/action-tmate@db65d6e9a5d44586bafd05807eef6e82d0a2e86c
-    #   uses: mxschmitt/action-tmate@v3
-    #   env:
-    #     WORKFLOWVAULTRBACCERT: ${{ secrets.WORKFLOWVAULTRBACCERT }}
-    #     COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
-
-    - name: Step 1
+    - name: Step 1 - Retrieve a secret
       id: step_1
       run: python3 step_1.py
 
-    - name: Step 2
+    - name: Step 2 - Execute two race condition possible steps simultanenously
       id: step_2
       run: python3 step_2.py
 
-    - name: Step 3
+    - name: Step 3 - Fire off a long running job
       id: step_3
       run: python3 step_3.py
       env:
         EXTERNAL_PIPELINE: ${{ secrets.EXTERNAL_PIPELINE }}
         EXTERNAL_PIPELINE_SHARED_SECRET: ${{ secrets.EXTERNAL_PIPELINE_SHARED_SECRET }}
 
-    - name: Step 4
+    - name: Step 4 - Receive result of long running job and continue
       id: step_4
       run: dapr run --app-id step_4 --app-protocol grpc --app-port 50051 -d ./components python3 step_4.py
