@@ -1,12 +1,4 @@
-"""
-dapr run python3 state_store.py
-
-- state - local redis
-- pubsub - redis streams
-- tracing - local zipkin
-
-"""
-
+from json import load
 from dapr.clients import DaprClient
 
 from dapr.clients.grpc._request import (
@@ -23,6 +15,9 @@ import os
 import asyncio
 import aiohttp
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 async def make_request(url):
     print(f"making request to {url}")
@@ -46,4 +41,3 @@ with WorkflowContext("step_3") as context:
         )
 
         context["step_3_variable"] = f"Step_3_variable.value = {uuid4().hex}"
-        print(context)

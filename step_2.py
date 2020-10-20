@@ -54,4 +54,3 @@ with WorkflowContext("step_2") as context:
 
         context["step_2_variable"] = f"Step_2_variable.value = {uuid4().hex}"
 
-    print(context)

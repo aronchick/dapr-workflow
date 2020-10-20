@@ -14,4 +14,4 @@ with WorkflowContext("step_1") as context:
         print(
             f"I've executed step 1 with a very secret secret who's value is: {resp.secret[key]}"
         )
-        context["step_1_variable"] = f"Step_1_variable.value = {uuid4().hex}"
+        context.set_value("step_1_variable", f"Step_1_variable.value = {uuid4().hex}")

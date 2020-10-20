@@ -9,3 +9,4 @@ msrestazure
 dapr
 dapr-ext-grpc
 aiohttp
+python-dotenv
