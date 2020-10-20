@@ -13,6 +13,7 @@ def longRunningTaskFinished(event: v1.Event) -> None:
     # print(event.Data(),flush=True)
     print(f"Long running task finished at {datetime.datetime.now().isoformat()}")
 
+
 from context import WorkflowContext
 
 with WorkflowContext("step_4") as context:

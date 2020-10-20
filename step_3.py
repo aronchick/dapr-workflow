@@ -37,8 +37,6 @@ with WorkflowContext("step_3") as context:
         storeName = "redisstatestore"
         key = "workingDirectory"
 
-
-
         longRunningURL = os.environ.get("EXTERNAL_PIPELINE")
         longRunningURLCode = os.environ.get("EXTERNAL_PIPELINE_SHARED_SECRET")
 
