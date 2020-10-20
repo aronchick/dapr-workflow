@@ -73,6 +73,8 @@ jobs:
       env:
         WORKFLOWVAULTRBACCERT: ${{ secrets.WORKFLOWVAULTRBACCERT }}
         COMPONENT_AZUREKEYVAULT: ${{ secrets.COMPONENT_AZUREKEYVAULT }}
+        COMPONENT_LOCALREDISSTATE: ${{ secrets.COMPONENT_LOCALREDISSTATE }}
+        COMPONENT_AZURESB: ${{ secrets.COMPONENT_AZURESB }}
 
     - name: Cache Installation
       uses: actions/cache@v2
