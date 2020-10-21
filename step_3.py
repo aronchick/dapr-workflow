@@ -40,4 +40,4 @@ with WorkflowContext("step_3") as context:
             make_request(f"{longRunningURL}?code={longRunningURLCode}")
         )
 
-        context["step_3_variable"] = f"Step_3_variable.value = {uuid4().hex}"
+        context.set_value("step_3_variable", f"{uuid4().hex}")

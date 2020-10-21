@@ -11,7 +11,5 @@ with WorkflowContext("step_1") as context:
 
         resp = d.get_secret(store_name=storeName, key=key)
 
-        print(
-            f"I've executed step 1 with a very secret secret who's value is: {resp.secret[key]}"
-        )
-        context.set_value("step_1_variable", f"Step_1_variable.value = {uuid4().hex}")
+        context.set_value('step_1: Retrieved Secret', resp.secret[key])
+        context.set_value("step_1: Random Value", uuid4().hex)

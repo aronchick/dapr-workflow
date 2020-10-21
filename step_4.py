@@ -26,4 +26,4 @@ with WorkflowContext("step_4") as context:
     
     app.run(50051)
 
-    context["step_4_variable"] = f"Step_4_variable.value = {uuid4().hex}"
+    context.set_value("step_4_variable", f"{uuid4().hex}")

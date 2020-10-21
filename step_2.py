@@ -52,5 +52,6 @@ with WorkflowContext("step_2") as context:
         a = d.get_state(state_store, key_name)
         print(f"the final value of the data is: {a.data}")
 
-        context["step_2_variable"] = f"Step_2_variable.value = {uuid4().hex}"
+        context.set_value("step_2_variable", f"{uuid4().hex}")
+
 
