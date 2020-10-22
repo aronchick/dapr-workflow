@@ -4,6 +4,10 @@ dapr run python3 state_store.py
 
 import contextlib
 from datetime import datetime
+import threading
+from time import sleep
+
+from dapr.proto.runtime.v1 import dapr_pb2_grpc
 from context import WorkflowContext
 from os import urandom
 from dapr.clients import DaprClient
@@ -12,46 +16,60 @@ from dapr.clients.grpc._request import (
     TransactionalStateOperation,
     TransactionOperationType,
 )
-from dapr.clients.grpc._state import StateItem
+from dapr.clients.grpc._state import StateItem, StateOptions, Consistency, Concurrency
 from random import randint
-import asyncio
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+import concurrent
 
 from uuid import uuid4
 
-key_name = "key_name"
+key_name = "ContentiousKey"
 state_store = "redisstatestore"
+step_name = "step_2"
 
 
-async def execute_step(daprClient, storeName, key, value):
-    await asyncio.sleep(randint(1, 2))
+def execute_step(args_tuple):
+    daprClient = args_tuple[0]
+    thread_number = args_tuple[1]
 
-    # Save single state.
-    daprClient.save_state(store_name=storeName, key=key, value=value)
-    print(f"Wrote {{ {key_name}: {value} }} to DB at {datetime.now().isoformat()}")
+    current_value = daprClient.get_state(store_name=state_store, key=key_name)
+
+    sleep(4)
+
+    if current_value.data == b"":
+        value = f"ContinuousValue-{thread_number}"
+        print(
+            f"Thread-{thread_number}: {key_name} == null. New value: {value}",
+            flush="True",
+        )
+        try:
+            g = daprClient.save_state(
+                store_name=state_store, key=key_name, value=value, etag='00000000000', options=StateOptions(consistency=Consistency.strong)
+            )
+            h = daprClient.get_state(store_name=state_store, key=key_name)
+            print(f"Wrote {{ {key_name}: {h.data} }} to DB at {datetime.now().isoformat()} with etag = {h.etag}", flush=True)
+        except Exception as e:
+            print("found exception", flush=True)
+
+def execute_all(d, threads_to_execute):
+    all_args = []
+    for i in range(threads_to_execute):
+        all_args.append((d, i))
+
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        return executor.map(execute_step, all_args)
 
 
-def two_parallel_jobs(daprClient, storename):
-    tasks = []
-    loop = asyncio.new_event_loop()
-
-    tasks.append(
-        loop.create_task(execute_step(daprClient, storename, key_name, "value-1000"))
-    )
-    tasks.append(
-        loop.create_task(execute_step(daprClient, storename, key_name, "value-2000"))
-    )
-
-    loop.run_until_complete(asyncio.wait(tasks))
-    loop.close()
-
-
-with WorkflowContext("step_2") as context:
+with WorkflowContext(step_name) as context:
     with DaprClient(address="localhost:20001") as d:
-        two_parallel_jobs(d, state_store)
+        # Clearing old value
+        d.delete_state(store_name=state_store, key=key_name)
 
-        a = d.get_state(state_store, key_name)
-        print(f"the final value of the data is: {a.data}")
+        execute_all(d, 10)
 
-        context.set_value("step_2_variable", f"{uuid4().hex}")
-
+        final_data = d.get_state(state_store, key_name)
+        context.set_value(f"{step_name}: Final Value", str(final_data.data, "utf8"))
+        context.set_value(f"{step_name}: Random Value", uuid4().hex)
 

@@ -35,6 +35,10 @@ class WorkflowContext(Dict):
 
         self.start_step(step_name)
 
+        print("==============================")
+        print(f"{step_name} Output ")
+        print("==============================")
+
     def __getitem__(self, key):
         val = dict.__getitem__(self, key)
         return val
@@ -70,6 +74,9 @@ class WorkflowContext(Dict):
             kv = d.save_state(self.storename, self.state_code, self.dehydrate())
             os.popen(f'dapr stop --app-id {self["current_step_name"]}')
         
+        print("==============================")
+        print(f"Current Context: ")
+        print("==============================")
         self.print_context()
 
     def end_step(self):

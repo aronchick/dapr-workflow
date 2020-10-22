@@ -19,15 +19,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+step_name = "step_3"
 async def make_request(url):
-    print(f"making request to {url}")
+    print(f"CALLER: Making REST call to long running external service at: {url}")
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             if resp.status == 200:
-                print(await resp.text())
+                print(f"RESPONSE: {await resp.text()}")
+
+    print(f"CALLER: Finished remote request.")
 
 
-with WorkflowContext("step_3") as context:
+with WorkflowContext(step_name) as context:
     with DaprClient(address=context["dapr_address"]) as d:
         storeName = "redisstatestore"
         key = "workingDirectory"
@@ -40,4 +43,5 @@ with WorkflowContext("step_3") as context:
             make_request(f"{longRunningURL}?code={longRunningURLCode}")
         )
 
-        context.set_value("step_3_variable", f"{uuid4().hex}")
+        context.set_value(f"{step_name}: Random Value", uuid4().hex)
+
