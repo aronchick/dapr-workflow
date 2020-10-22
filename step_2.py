@@ -39,7 +39,7 @@ def execute_step(args_tuple):
     sleep(4)
 
     if current_value.data == b"":
-        value = f"ContinuousValue-{thread_number}"
+        value = f"ContentiousValue-{thread_number}"
         print(
             f"Thread-{thread_number}: {key_name} == null. New value: {value}",
             flush="True",
@@ -51,23 +51,21 @@ def execute_step(args_tuple):
             h = daprClient.get_state(store_name=state_store, key=key_name)
             print(f"Wrote {{ {key_name}: {h.data} }} to DB at {datetime.now().isoformat()} with etag = {h.etag}", flush=True)
         except Exception as e:
-            print("found exception", flush=True)
-
-def execute_all(d, threads_to_execute):
-    all_args = []
-    for i in range(threads_to_execute):
-        all_args.append((d, i))
-
-    with ThreadPoolExecutor(max_workers=12) as executor:
-        return executor.map(execute_step, all_args)
-
+            h = daprClient.get_state(store_name=state_store, key=key_name)
+            print(f"Failed to write state from Thread-{thread_number} due to concurrency issue. Using stored value: {h.data}", flush=True)
 
 with WorkflowContext(step_name) as context:
     with DaprClient(address="localhost:20001") as d:
         # Clearing old value
         d.delete_state(store_name=state_store, key=key_name)
 
-        execute_all(d, 10)
+        # Create 10 fake threads to mimic multiple workers
+        all_threads = []
+        for i in range(10):
+            all_threads.append((d, i))
+
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            executor.map(execute_step, all_threads)
 
         final_data = d.get_state(state_store, key_name)
         context.set_value(f"{step_name}: Final Value", str(final_data.data, "utf8"))

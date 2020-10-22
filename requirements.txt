@@ -6,7 +6,9 @@ dapr
 dapr-ext-grpc
 msrest
 msrestazure
-dapr
-dapr-ext-grpc
+# dapr
+# dapr-ext-grpc
 aiohttp
 python-dotenv
+dapr-dev
+dapr-ext-grpc-dev
