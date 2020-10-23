@@ -55,7 +55,7 @@ def execute_step(args_tuple):
             print(f"Failed to write state from Thread-{thread_number} due to concurrency issue. Using stored value: {h.data}", flush=True)
 
 with WorkflowContext(step_name) as context:
-    with DaprClient(address="localhost:20001") as d:
+    with DaprClient(context["dapr_address"]) as d:
         # Clearing old value
         d.delete_state(store_name=state_store, key=key_name)
 
