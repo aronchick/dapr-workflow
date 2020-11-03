@@ -32,9 +32,9 @@ async def make_request(url):
 
 with WorkflowContext(step_name) as context:
     with DaprClient(address=context["dapr_address"]) as d:
-        storeName = "redisstatestore"
-        key = "workingDirectory"
 
+        contentious_key_value = context.get("ContentiousKey")
+        
         longRunningURL = os.environ.get("EXTERNAL_PIPELINE")
         longRunningURLCode = os.environ.get("EXTERNAL_PIPELINE_SHARED_SECRET")
 

@@ -50,18 +50,6 @@ jobs:
         COMPONENT_LOCALREDISSTATE: ${{ secrets.COMPONENT_LOCALREDISSTATE }}
         COMPONENT_AZURESB: ${{ secrets.COMPONENT_AZURESB }}
 
-    - name: Cache Installation
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-installation
-      with:
-        path: ~/.local
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
     - name: Step 1 - Retrieve a secret
       id: step_1
       run: python3 step_1.py
