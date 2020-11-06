@@ -1,3 +1,4 @@
 Foo
 Bar
 Qaz
+Baz

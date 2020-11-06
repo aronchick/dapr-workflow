@@ -8,7 +8,6 @@ step_name = "step_1"
 with WorkflowContext(step_name) as context:
     with DaprClient(context["dapr_address"]) as d:
         key = "servicekey"
-        randomKey = "random"
         storeName = "azurekeyvault"
 
         print(f"Requesting secret from vault: serviceKeyRBACPassword")
