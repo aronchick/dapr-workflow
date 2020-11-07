@@ -13,7 +13,7 @@ if not (component_dir.exists()):
     component_dir.mkdir()
 
 for component in all_components:
-    var_name = f"COMPONENT_{component}"
+    var_name = f"{component}"
     component_value = os.environ.get(var_name)
     print(f"V - {var_name}: {component_value}")
     if component_value is not None:
